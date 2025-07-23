@@ -10,7 +10,12 @@ def api_root(request, format=None):
     if request.method == 'POST':
         return Response({"message": "POST request received"}, status=status.HTTP_201_CREATED)
 
-    base_url = 'http://localhost:8000/'
+    # Detect host from request for codespace or localhost
+    host = request.get_host()
+    if 'app.github.dev' in host:
+        base_url = f'https://{host}/'
+    else:
+        base_url = f'http://{host}/'
     return Response({
         'users': base_url + 'api/users/?format=api',
         'teams': base_url + 'api/teams/?format=api',
